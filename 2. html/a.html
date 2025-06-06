@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Specification - Full Table of Contents</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        li::before {
+            content: "•";
+            position: absolute;
+            left: -15px;
+            color: #666;
+        }
+        li:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Full Table of Contents</h1>
+    <ul>
+        <li>1 Introduction
+            <ul>
+                <li>1.1 Where does this specification fit?</li>
+                <li>1.2 Is this HTML5?</li>
+                <li>1.3 Background</li>
+                <li>1.4 Audience</li>
+                <li>1.5 Scope</li>
+                <li>1.6 History</li>
+                <li>1.7 Design notes
+                    <ul>
+                        <li>1.7.1 Serializability of script execution</li>
+                        <li>1.7.2 Extensibility</li>
+                    </ul>
+                </li>
+                <li>1.8 HTML vs XML syntax</li>
+                <li>1.9 Structure of this specification
+                    <ul>
+                        <li>1.9.1 How to read this specification</li>
+                        <li>1.9.2 Typographic conventions</li>
+                    </ul>
+                </li>
+                <li>1.10 A quick introduction to HTML
+                    <ul>
+                        <li>1.10.1 Writing secure applications with HTML</li>
+                        <li>1.10.2 Common pitfalls to avoid when using the scripting APIs</li>
+                        <li>1.10.3 How to catch mistakes when writing HTML: validators and conformance checkers</li>
+                    </ul>
+                </li>
+                <li>1.11 Conformance requirements for authors
+                    <ul>
+                        <li>1.11.1 Presentational markup</li>
+                        <li>1.11.2 Syntax errors</li>
+                        <li>1.11.3 Restrictions on content models and on attribute values</li>
+                    </ul>
+                </li>
+                <li>1.12 Suggested reading</li>
+            </ul>
+        </li>
+        <li>2 Common infrastructure
+            <ul>
+                <li>2.1 Terminology
+                    <ul>
+                        <li>2.1.1 Parallelism</li>
+                        <li>2.1.2 Resources</li>
+                        <li>2.1.3 XML compatibility</li>
+                        <li>2.1.4 DOM trees</li>
+                        <li>2.1.5 Scripting</li>
+                        <li>2.1.6 Plugins</li>
+                        <li>2.1.7 Character encodings</li>
+                        <li>2.1.8 Conformance classes</li>
+                        <li>2.1.9 Dependencies</li>
+                        <li>2.1.10 Extensibility</li>
+                        <li>2.1.11 Interactions with XPath and XSLT</li>
+                    </ul>
+                </li>
+                <li>2.2 Policy-controlled features</li>
+                <li>2.3 Common microsyntaxes
+                    <ul>
+                        <li>2.3.1 Common parser idioms</li>
+                        <li>2.3.2 Boolean attributes</li>
+                        <li>2.3.3 Keywords and enumerated attributes</li>
+                        <li>2.3.4 Numbers
+                            <ul>
+                                <li>2.3.4.1 Signed integers</li>
+                                <li>2.3.4.2 Non-negative integers</li>
+                                <li>2.3.4.3 Floating-point numbers</li>
+                                <li>2.3.4.4 Percentages and lengths</li>
+                                <li>2.3.4.5 Nonzero percentages and lengths</li>
+                                <li>2.3.4.6 Lists of floating-point numbers</li>
+                                <li>2.3.4.7 Lists of dimensions</li>
+                            </ul>
+                        </li>
+                        <li>2.3.5 Dates and times
+                            <ul>
+                                <li>2.3.5.1 Months</li>
+                                <li>2.3.5.2 Dates</li>
+                                <li>2.3.5.3 Yearless dates</li>
+                                <li>2.3.5.4 Times</li>
+                                <li>2.3.5.5 Local dates and times</li>
+                                <li>2.3.5.6 Time zones</li>
+                                <li>2.3.5.7 Global dates and times</li>
+                                <li>2.3.5.8 Weeks</li>
+                                <li>2.3.5.9 Durations</li>
+                                <li>2.3.5.10 Vaguer moments in time</li>
+                            </ul>
+                        </li>
+                        <li>2.3.6 Legacy colors</li>
+                        <li>2.3.7 Space-separated tokens</li>
+                        <li>2.3.8 Comma-separated tokens</li>
+                        <li>2.3.9 References</li>
+                        <li>2.3.10 Media queries</li>
+                        <li>2.3.11 Unique internal values</li>
+                    </ul>
+                </li>
+                <li>2.4 URLs
+                    <ul>
+                        <li>2.4.1 Terminology</li>
+                        <li>2.4.2 Parsing URLs</li>
+                        <li>2.4.3 Dynamic changes to base URLs</li>
+                    </ul>
+                </li>
+                <li>2.5 Fetching resources
+                    <ul>
+                        <li>2.5.1 Terminology</li>
+                        <li>2.5.2 Determining the type of a resource</li>
+                        <li>2.5.3 Extracting character encodings from meta elements</li>
+                        <li>2.5.4 CORS settings attributes</li>
+                        <li>2.5.5 Referrer policy attributes</li>
+                        <li>2.5.6 Nonce attributes</li>
+                        <li>2.5.7 Lazy loading attributes</li>
+                        <li>2.5.8 Blocking attributes</li>
+                        <li>2.5.9 Fetch priority attributes</li>
+                    </ul>
+                </li>
+                <li>2.6 Common DOM interfaces
+                    <ul>
+                        <li>2.6.1 Reflecting content attributes in IDL attributes</li>
+                        <li>2.6.2 Using reflect in specifications</li>
+                        <li>2.6.3 Collections
+                            <ul>
+                                <li>2.6.3.1 The HTMLAllCollection interface
+                                    <ul>
+                                        <li>2.6.3.1.1 [[Call]] ( thisArgument, argumentsList )</li>
+                                    </ul>
+                                </li>
+                                <li>2.6.3.2 The HTMLFormControlsCollection interface</li>
+                                <li>2.6.3.3 The HTMLOptionsCollection interface</li>
+                            </ul>
+                        </li>
+                        <li>2.6.4 The DOMStringList interface</li>
+                    </ul>
+                </li>
+                <li>2.7 Safe passing of structured data
+                    <ul>
+                        <li>2.7.1 Serializable objects</li>
+                        <li>2.7.2 Transferable objects</li>
+                        <li>2.7.3 StructuredSerializeInternal ( value, forStorage [ , memory ] )</li>
+                        <li>2.7.4 StructuredSerialize ( value )</li>
+                        <li>2.7.5 StructuredSerializeForStorage ( value )</li>
+                        <li>2.7.6 StructuredDeserialize ( serialized, targetRealm [ , memory ] )</li>
+                        <li>2.7.7 StructuredSerializeWithTransfer ( value, transferList )</li>
+                        <li>2.7.8 StructuredDeserializeWithTransfer ( serializeWithTransferResult, targetRealm )</li>
+                        <li>2.7.9 Performing serialization and transferring from other specifications</li>
+                        <li>2.7.10 Structured cloning API</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</body>
+</html>

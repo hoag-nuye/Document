@@ -1,0 +1,20 @@
+- Then Oracle made two strategic decisions with Java 7. They decided to stop updating the OCJA exam. They also decided to cover more on in the programmer space and split it into two exams. Now you first take the OCAJP (Oracle Certified Associate Java Programmer), also known as Java Programmer I, or OCA. That’s what this book is about. Then you take the OCPJP (Oracle Certified Professional Java Programmer), also known as Java Programmer II, or OCP.There’s also an upgrade exam in case you took an older version of the SCJP or OCPJP and want to upgrade. Most people refer to the current exams as OCA 8, OCP 8, and the Java 8 upgrade exam. 
+
+- Oracle has a tendency to fiddle with the length of the exam and the passing score once it comes out. Since it’s pretty much a guarantee that whatever we tell you here will become obsolete, we will give you a feel for the range of variation. The OCA exam has varied between 60 and 90 questions since it was introduced. The score to pass has varied between 60 percent and 80 percent. The time allowed to take the exam has varied from two hours to two-and-a-half hours.
+
+- Oracle has a tendency to “tweak” the exam objectives over time as well. They do make minor additions and removals from what is covered on the exam.
+
+- https://www.selikoff.net/java-oca-8-programmer-i-study-guide/
+
+-  Others stick you in a closet with lots of people talking around you. You don’t want to be taking the test with someone complaining about their broken laptop nearby! At this time, you can reschedule the exam without penalty until up to 24 hours before. This means that you can register for a convenient time slot well in advance, knowing that you can delay if you aren’t ready by that time. Rescheduling is easy and can be done on the Pearson VUE website. This may change, so check the rules before paying.
+
+- When you go to take the exam, remember to bring two forms of ID, including one that is government issued. See Pearson’s list of what is acceptable ID at http://www.pearsonvue .com/policies/1S.pdf. Try not to bring too much extra with you as it will not be allowed into the exam room. While you will be allowed to check your belongings, it is better to leave extra items at home or in the car
+
+-You’ll need to go to http:// certview.oracle.com to fi nd out whether you passed and your score.
+
+-Oracle uses a separate system for scores. You’ll need to go to http://
+certview.oracle.com to fi nd out whether you passed and your score
+
+- Note that exam questions will sometimes have line numbers that begin with numbers
+higher than 1. This is to indicate that you are looking at a code snippet rather than a com-
+plete class.
