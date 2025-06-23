@@ -1,0 +1,395 @@
+{
+    "name": "Workflow Read Google Sheet Content",
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -300,
+          -60
+        ],
+        "id": "5ef95aca-6fc4-4cd9-abcf-b50c629f6774",
+        "name": "When clicking ‘Test workflow’"
+      },
+      {
+        "parameters": {
+          "content": "## Workflow N8n - N8n Academy - thao tác google sheet và google docs\nFlow dùng thông tin trong google sheet để tạo các file google docs theo mẫu có sẵn, sau khi kết thúc thì cập nhật link file google docs vào file google sheet\n",
+          "height": 480,
+          "width": 1240,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -120,
+          -240
+        ],
+        "id": "4af96515-80af-45de-bb54-090fc89fdb19",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "14rtQtp0KHWKQIdDkOvrxrpincCjGuvbA7wrweufIv6w",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Trang tính1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14rtQtp0KHWKQIdDkOvrxrpincCjGuvbA7wrweufIv6w/edit#gid=0"
+          },
+          "options": {
+            "dataLocationOnSheet": {
+              "values": {
+                "rangeDefinition": "detectAutomatically"
+              }
+            }
+          }
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          -80,
+          -60
+        ],
+        "id": "2c433dd8-c82c-4af0-9e13-26ca25354698",
+        "name": "Get Google Sheet Data",
+        "executeOnce": false,
+        "alwaysOutputData": false,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "cBmnjPUleQ1yQFGG",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "folderId": "default",
+          "title": "={{ $json.title }}"
+        },
+        "type": "n8n-nodes-base.googleDocs",
+        "typeVersion": 2,
+        "position": [
+          460,
+          -60
+        ],
+        "id": "141e3bca-05c5-4223-8066-5503d9e20b76",
+        "name": "Create Google Doc File",
+        "credentials": {
+          "googleDocsOAuth2Api": {
+            "id": "DHir00BDOxDqerGx",
+            "name": "Google Docs account 3"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "14rtQtp0KHWKQIdDkOvrxrpincCjGuvbA7wrweufIv6w",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Trang tính1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14rtQtp0KHWKQIdDkOvrxrpincCjGuvbA7wrweufIv6w/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "row_number": "={{ $json.row_number }}",
+              "link": "={{ $json.url_link }}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "STT",
+                "displayName": "STT",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "họ và tên",
+                "displayName": "họ và tên",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "địa chỉ",
+                "displayName": "địa chỉ",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "số điện thoại",
+                "displayName": "số điện thoại",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "email.",
+                "displayName": "email.",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "link",
+                "displayName": "link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          1000,
+          -60
+        ],
+        "id": "c8453ba5-603d-4834-af2a-7472efb81c0d",
+        "name": "Modify data back to Google Sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "cBmnjPUleQ1yQFGG",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "documentURL": "1DP37OZpebiCCUoeETs_VaPfzbHzw-0jNXM_UrvTQO14"
+        },
+        "type": "n8n-nodes-base.googleDocs",
+        "typeVersion": 2,
+        "position": [
+          100,
+          -60
+        ],
+        "id": "98e16de9-b758-497b-ae33-977482f0090c",
+        "name": "Get Google Docs Template",
+        "alwaysOutputData": false,
+        "executeOnce": true,
+        "notesInFlow": false,
+        "credentials": {
+          "googleDocsOAuth2Api": {
+            "id": "xE5fkBupegNi1Bjh",
+            "name": "Google Docs account 2"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Get the template string from Google Docs\nconst templateData = $input.first().json.content;\n\n// Get all rows from Google Sheet\nconst googleSheetData = $(\"Get Google Sheet Data\").all().map(item => item.json);\n\n// Get header row (row_number === 2) to define mappings\nconst headerRow = googleSheetData.find(row => row.row_number === 2);\nif (!headerRow) throw new Error(\"Header row not found (row_number: 2)\");\n\ndelete headerRow.row_number; // remove row_number key if present\n\n// Process each data row (starting from row_number > 2)\nconst output = [];\n\ngoogleSheetData.forEach((row,indexRow) => {\n  if (row.row_number === 2) return { }; // skip header row\n\n  let mappedContent = templateData;\n\n  for (const [key, placeholder] of Object.entries(headerRow)) {\n    const value = row[key] || '';\n    const regex = new RegExp(`{{\\\\s*${placeholder}\\\\s*}}`, 'g');\n    mappedContent = mappedContent.replace(regex, value);\n  }\n\n  if (\n    indexRow > 0 && !row.link\n  ){\n    output.push({\n      json: {\n        row_number: row.row_number,\n        title: 'Thông tin khách hàng ' + row.STT,\n        mapped_content: mappedContent.trim()\n      }\n    });\n  }\n});\n\nreturn output;\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          280,
+          -60
+        ],
+        "id": "2f78956e-d3fe-4d09-87c9-336f3e146e1b",
+        "name": "Mapping Field",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentURL": "={{ $json.id }}",
+          "actionsUi": {
+            "actionFields": [
+              {
+                "action": "insert",
+                "text": "={{ $('Mapping Field').item.json.mapped_content }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.googleDocs",
+        "typeVersion": 2,
+        "position": [
+          640,
+          -60
+        ],
+        "id": "2f2b417d-55ee-41e7-b865-06578a6fc95e",
+        "name": "Update Google Docs",
+        "credentials": {
+          "googleDocsOAuth2Api": {
+            "id": "DHir00BDOxDqerGx",
+            "name": "Google Docs account 3"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "let output = [];\n\nconst googleDocIdData = $(\"Update Google Docs\").all().map(item => item.json);\n\ngoogleDocIdData.map((item,itemIndex) => {\n  output.push({\n    url_link: \"https://docs.google.com/document/d/\" + item?.documentId,\n    row_number: $(\"Mapping Field\").all().map(item => item.json)[itemIndex].row_number\n  })\n})\n\nreturn output;\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          820,
+          -60
+        ],
+        "id": "e36d4ccf-e0dd-4b4b-ae3a-c252b9985336",
+        "name": "Create Google Doc Link",
+        "alwaysOutputData": true
+      }
+    ],
+    "pinData": {},
+    "connections": {
+      "When clicking ‘Test workflow’": {
+        "main": [
+          [
+            {
+              "node": "Get Google Sheet Data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Google Sheet Data": {
+        "main": [
+          [
+            {
+              "node": "Get Google Docs Template",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create Google Doc File": {
+        "main": [
+          [
+            {
+              "node": "Update Google Docs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Modify data back to Google Sheet": {
+        "main": [
+          []
+        ]
+      },
+      "Get Google Docs Template": {
+        "main": [
+          [
+            {
+              "node": "Mapping Field",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Mapping Field": {
+        "main": [
+          [
+            {
+              "node": "Create Google Doc File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Google Docs": {
+        "main": [
+          [
+            {
+              "node": "Create Google Doc Link",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create Google Doc Link": {
+        "main": [
+          [
+            {
+              "node": "Modify data back to Google Sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "active": false,
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "versionId": "fa942923-d916-4f52-bad7-44e5a43b142e",
+    "meta": {
+      "templateCredsSetupCompleted": true,
+      "instanceId": "82d1a6f025c77387b901d86ed0ada4e7723ea5ddce088d94cc288205ed5167cb"
+    },
+    "id": "93qbI4x8aeAGidaa",
+    "tags": [
+      {
+        "name": "Google Analytics",
+        "id": "yfhLn7DqBLldnPzT",
+        "createdAt": "2025-04-18T07:30:38.327Z",
+        "updatedAt": "2025-04-18T07:30:38.327Z"
+      },
+      {
+        "name": "Utility",
+        "id": "zm8Y9SeGN0cYM1Wk",
+        "createdAt": "2025-04-18T07:30:38.361Z",
+        "updatedAt": "2025-04-18T07:30:38.361Z"
+      }
+    ]
+  }

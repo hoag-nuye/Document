@@ -1,0 +1,72 @@
+services:
+  # mysqldb:
+  #   build:
+  #     context: ./apps/genaie-app/src/mysqldb
+  #     args:
+  #       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #       - MYSQL_DATABASE=${MYSQL_DATABASE}
+  #   image: mysql:8.4.5
+  #   volumes:
+  #     - ./mysql-data:/var/lib/mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: 032401
+  #     MYSQL_DATABASE: user_management_test
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "mysqladmin ping -p032401"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 30s
+
+  genaie_app_backend:
+    env_file:
+      - .env
+    build:
+      context: ./apps/genaie-app/src/backend
+      args:
+        - BACKEND_PORT=${GENAIE_APP_BE_PORT}
+    volumes:
+      - ./apps/genaie-app/src/backend:/app
+      - /app/target
+    ports:
+      - "${GENAIE_APP_BE_PORT}:${GENAIE_APP_BE_PORT}"
+    environment:
+      MAVEN_BACKEND_PORT: ${GENAIE_APP_BE_PORT}
+      DB_URL: ${GENAIE_APP_BE_DB_URL}
+      DB_USERNAME: ${GENAIE_APP_BE_DB_USERNAME}
+      DB_PASSWORD: ${GENAIE_APP_BE_DB_PASSWORD}
+      DB_JWT_SECRET: ${GENAIE_APP_BE_DB_JWT_SECRET}
+      AI_AGENT_CHATS_GENAIE_URL: ${CHATS_GENAIE_AGENT_SERVICE_URL}
+      SPRING_PROFILES_ACTIVE: dev
+    # depends_on:
+    #   mysqldb:
+    #     condition: service_healthy
+    networks:
+      - app_net
+
+  genaie_app_frontend:
+    env_file:
+      - .env
+    build:
+      context: ./apps/genaie-app/src/frontend
+      args:
+        - FRONTEND_PORT=${GENAIE_APP_FE_PORT}
+    volumes:
+      - ./apps/genaie-app/src/frontend:/app  # Mount mã nguồn
+      - /app/node_modules               # tránh lỗi node_modules bị ghi đè
+    ports:
+      - "${GENAIE_APP_FE_PORT}:${GENAIE_APP_FE_PORT}"
+    depends_on:
+      - genaie_app_backend
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=100
+      - VITE_FRONTEND_PORT=${GENAIE_APP_FE_PORT}  # map runtime var
+      - VITE_API_URL=http://genaie_app_backend:${GENAIE_APP_BE_PORT}
+      - BE_API_URL=http://genaie_app_backend:${GENAIE_APP_BE_PORT}
+    networks:
+      - app_net
+
+networks:
+  app_net:
+    driver: bridge

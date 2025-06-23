@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Static UI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <h1 class="sidebar__title">Workspace</h1>
+      <ul class="sidebar__nav">
+        <li data-tab="home" class="active">Home</li>
+        <li data-tab="projects">Projects</li>
+        <li data-tab="agents">AI Agents</li>
+        <li data-tab="media">Media</li>
+        <li data-tab="automations">Automations</li>
+        <li data-tab="board">Board</li>
+      </ul>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main">
+      <header class="main__header">
+        <h2 id="main-title">Home</h2>
+      </header>
+      <section id="home" class="tab-content">Chào mừng đến trang Home!</section>
+      <section id="projects" class="tab-content hidden">Đây là tab Projects.</section>
+      <section id="agents" class="tab-content hidden">Đây là tab AI Agents.</section>
+      <section id="media" class="tab-content hidden">Đây là tab Media.</section>
+      <section id="automations" class="tab-content hidden">Đây là tab Automations.</section>
+
+      <!-- Board tab -->
+      <section id="board" class="tab-content hidden">
+        <div class="board">
+          <!-- Ví dụ 3 agent -->
+          <div class="agent" draggable="false" style="left:50px; top:50px;">Agent A</div>
+          <div class="agent" draggable="false" style="left:200px; top:150px;">Agent B</div>
+          <div class="agent" draggable="false" style="left:350px; top:80px;">Agent C</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

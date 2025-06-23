@@ -1,0 +1,434 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 8,
+              "minute": 0
+            }
+          ]
+        }
+      },
+      "name": "Cron Trigger",
+      "type": "n8n-nodes-base.cron",
+      "position": [100, 100]
+    },
+    {
+      "parameters": {
+        "authentication": "none",
+        "httpMethod": "POST",
+        "path": "start-workflow"
+      },
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "position": [100, 200]
+    },
+    {
+      "parameters": {
+        "url": "https://medium.com/feed",
+        "responseFormat": "json"
+      },
+      "name": "Collect RSS",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [300, 100]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "raw_content",
+              "value": "{{ $json['content'] }}"
+            }
+          ]
+        }
+      },
+      "name": "Set Raw Data",
+      "type": "n8n-nodes-base.set",
+      "position": [500, 100]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "sheetId": "your-sheet-id",
+        "range": "Sheet1",
+        "values": [
+          "{{ $json['source'] }}",
+          "{{ $json['raw_content'] }}",
+          "{{ new Date().toISOString() }}"
+        ]
+      },
+      "name": "Log to Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [700, 100]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "prompt": "Tạo prompt chi tiết từ dữ liệu: {{ $json['raw_content'] }}"
+      },
+      "name": "Generate Prompt",
+      "type": "n8n-nodes-base.openAI",
+      "position": [900, 100]
+    },
+    {
+      "parameters": {
+        "url": "https://api.stockimg.ai/generate",
+        "httpMethod": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "{{ $json['prompt'] }}"
+            }
+          ]
+        }
+      },
+      "name": "Create Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1100, 100]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "folderId": "your-folder-id",
+        "fileName": "{{ $json['title'] || 'content_' + new Date().toISOString() }}"
+      },
+      "name": "Store to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [1300, 100]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "sheetId": "your-sheet-id",
+        "range": "Sheet1",
+        "values": [
+          "Image",
+          "{{ $json['title'] }}",
+          "{{ $json['content_url'] }}",
+          "{{ JSON.stringify($json['metadata']) }}",
+          "{{ new Date().toISOString() }}"
+        ]
+      },
+      "name": "Log Storage",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [1500, 100]
+    },
+    {
+      "parameters": {
+        "url": "https://api.shutterstock.com/v2/images",
+        "httpMethod": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "{{ $json['content_url'] }}"
+            },
+            {
+              "name": "title",
+              "value": "{{ $json['title'] }}"
+            }
+          ]
+        }
+      },
+      "name": "Distribute to Shutterstock",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1700, 100]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "calendar": "your-calendar-id",
+        "title": "Đăng ảnh lên Shutterstock",
+        "startDateTime": "{{ new Date(new Date().getTime() + 24*60*60*1000).toISOString() }}",
+        "options": {
+          "reminders": {
+            "reminder": [
+              {
+                "method": "popup",
+                "minutesBefore": 60
+              }
+            ]
+          }
+        }
+      },
+      "name": "Schedule Posting",
+      "type": "n8n-nodes-base.googleCalendar",
+      "position": [1900, 100]
+    },
+    {
+      "parameters": {
+        "url": "https://api.shutterstock.com/v2/user/images",
+        "responseFormat": "json"
+      },
+      "name": "Fetch Performance",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [2100, 100]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "sheetId": "your-sheet-id",
+        "range": "Sheet1",
+        "values": [
+          "Shutterstock",
+          "{{ $json['content_url'] }}",
+          "{{ $json['revenue'] }}",
+          "{{ $json['downloads'] }}",
+          "{{ new Date().toISOString() }}"
+        ]
+      },
+      "name": "Log Performance",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [2300, 100]
+    },
+    {
+      "parameters": {
+        "authentication": "none",
+        "httpMethod": "POST",
+        "path": "transaction-notification"
+      },
+      "name": "Monetization Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [2500, 100]
+    },
+    {
+      "parameters": {
+        "sendTo": "your-email@gmail.com",
+        "subject": "Xác nhận giao dịch",
+        "message": "Giao dịch thành công cho {{ $json['content_url'] }}."
+      },
+      "name": "Send Confirmation",
+      "type": "n8n-nodes-base.gmail",
+      "position": [2700, 100]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "{{ $json['statusCode'] }}",
+              "operation": "notEqual",
+              "value2": 200
+            }
+          ]
+        }
+      },
+      "name": "Check Errors",
+      "type": "n8n-nodes-base.if",
+      "position": [2900, 100]
+    },
+    {
+      "parameters": {
+        "text": "Lỗi: {{ $json['error'] || 'Unknown error' }} tại bước {{ $node['name'] }}"
+      },
+      "name": "Notify Error",
+      "type": "n8n-nodes-base.slack",
+      "position": [3100, 200]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "prompt": "Bạn là trợ lý ảo quản lý workflow tự động hóa tiếp thị nội dung. Nhiệm vụ của bạn là giám sát 9 AI Agent, lên lịch, phát hiện lỗi, và gửi thông báo qua Slack, Telegram, hoặc Gmail."
+      },
+      "name": "AI Virtual Assistant",
+      "type": "n8n-nodes-base.aiAgent",
+      "position": [100, 400]
+    }
+  ],
+  "connections": {
+    "Cron Trigger": {
+      "main": [
+        [
+          {
+            "node": "Collect RSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Collect RSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect RSS": {
+      "main": [
+        [
+          {
+            "node": "Set Raw Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Raw Data": {
+      "main": [
+        [
+          {
+            "node": "Log to Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to Sheets": {
+      "main": [
+        [
+          {
+            "node": "Generate Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Prompt": {
+      "main": [
+        [
+          {
+            "node": "Create Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Image": {
+      "main": [
+        [
+          {
+            "node": "Store to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store to Drive": {
+      "main": [
+        [
+          {
+            "node": "Log Storage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Storage": {
+      "main": [
+        [
+          {
+            "node": "Distribute to Shutterstock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Distribute to Shutterstock": {
+      "main": [
+        [
+          {
+            "node": "Schedule Posting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Posting": {
+      "main": [
+        [
+          {
+            "node": "Fetch Performance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Performance": {
+      "main": [
+        [
+          {
+            "node": "Log Performance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Performance": {
+      "main": [
+        [
+          {
+            "node": "Monetization Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monetization Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Confirmation": {
+      "main": [
+        [
+          {
+            "node": "Check Errors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Errors": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Notify Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Virtual Assistant": {
+      "main": [
+        [
+          {
+            "node": "Cron Trigger",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

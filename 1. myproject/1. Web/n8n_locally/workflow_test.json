@@ -1,0 +1,192 @@
+{
+  "name": "Auto News Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "calendar": "Primary",
+        "summary": "Auto News Schedule",
+        "description": "Triggered to start the workflow",
+        "start": "={{$now}}",
+        "end": "={{$now.addMinutes(5)}}"
+      },
+      "name": "Trigger Schedule",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [100, 100]
+    },
+    {
+      "parameters": {
+        "url": "https://rss.cnn.com/rss/edition.rss",
+        "options": {
+          "count": 10
+        }
+      },
+      "name": "Fetch News",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [300, 100]
+    },
+    {
+      "parameters": {
+        "functionCode": "return items.slice(0, 10);"
+      },
+      "name": "Filter Top 10",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [500, 100]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "prompt": "Tóm tắt bài viết sau và tạo tiêu đề hấp dẫn: {{$json[\"content\"]}}",
+        "maxTokens": 500
+      },
+      "name": "Summarize & Title",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 1,
+      "position": [700, 100]
+    },
+    {
+      "parameters": {
+        "to": "your.email@gmail.com",
+        "subject": "Xác nhận tin tức",
+        "html": "Danh sách tiêu đề và tóm tắt các tin tức. Chọn nút xác nhận (Webhook) để tiếp tục."
+      },
+      "name": "Send Summary Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [900, 100]
+    },
+    {
+      "parameters": {
+        "path": "news-confirm",
+        "method": "POST"
+      },
+      "name": "Confirmation Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [1100, 100]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "prompt": "Viết lại bài viết hay hơn từ nội dung sau: {{$json[\"content\"]}}",
+        "maxTokens": 1000
+      },
+      "name": "Rewrite Article",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 1,
+      "position": [1300, 100]
+    },
+    {
+      "parameters": {
+        "to": "your.email@gmail.com",
+        "subject": "Xác nhận bài viết",
+        "html": "Xem lại bài viết. Chọn Improve để chỉnh sửa hoặc Perfect để lập lịch."
+      },
+      "name": "Send Article Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [1500, 100]
+    },
+    {
+      "parameters": {
+        "path": "article-feedback",
+        "method": "POST"
+      },
+      "name": "Article Feedback Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [1700, 100]
+    },
+    {
+      "parameters": {
+        "calendar": "Primary",
+        "summary": "Đăng bài viết",
+        "description": "Lên lịch đăng bài viết đã duyệt",
+        "start": "={{$now.addDays(1)}}",
+        "end": "={{$now.addDays(1).addMinutes(10)}}"
+      },
+      "name": "Schedule Post",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [1900, 100]
+    },
+    {
+      "parameters": {
+        "to": "your.email@gmail.com",
+        "subject": "Xác nhận lịch đăng",
+        "html": "Dưới đây là lịch đăng bài. Chọn Improve hoặc Perfect."
+      },
+      "name": "Confirm Schedule Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [2100, 100]
+    },
+    {
+      "parameters": {
+        "path": "schedule-feedback",
+        "method": "POST"
+      },
+      "name": "Schedule Feedback Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [2300, 100]
+    },
+    {
+      "parameters": {
+        "url": "https://yourwordpress.com/wp-json/wp/v2/posts",
+        "method": "POST",
+        "bodyParametersUi": {
+          "parameter": [
+            {"name": "title", "value": "={{$json[\"title\"]}}"},
+            {"name": "content", "value": "={{$json[\"content\"]}}"},
+            {"name": "status", "value": "publish"}
+          ]
+        }
+      },
+      "name": "Post to WordPress",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [2500, 100]
+    }
+  ],
+  "connections": {
+    "Trigger Schedule": {
+      "main": [[{"node": "Fetch News", "type": "main", "index": 0}]]
+    },
+    "Fetch News": {
+      "main": [[{"node": "Filter Top 10", "type": "main", "index": 0}]]
+    },
+    "Filter Top 10": {
+      "main": [[{"node": "Summarize & Title", "type": "main", "index": 0}]]
+    },
+    "Summarize & Title": {
+      "main": [[{"node": "Send Summary Email", "type": "main", "index": 0}]]
+    },
+    "Send Summary Email": {
+      "main": [[{"node": "Confirmation Webhook", "type": "main", "index": 0}]]
+    },
+    "Confirmation Webhook": {
+      "main": [[{"node": "Rewrite Article", "type": "main", "index": 0}]]
+    },
+    "Rewrite Article": {
+      "main": [[{"node": "Send Article Email", "type": "main", "index": 0}]]
+    },
+    "Send Article Email": {
+      "main": [[{"node": "Article Feedback Webhook", "type": "main", "index": 0}]]
+    },
+    "Article Feedback Webhook": {
+      "main": [[{"node": "Schedule Post", "type": "main", "index": 0}]]
+    },
+    "Schedule Post": {
+      "main": [[{"node": "Confirm Schedule Email", "type": "main", "index": 0}]]
+    },
+    "Confirm Schedule Email": {
+      "main": [[{"node": "Schedule Feedback Webhook", "type": "main", "index": 0}]]
+    },
+    "Schedule Feedback Webhook": {
+      "main": [[{"node": "Post to WordPress", "type": "main", "index": 0}]]
+    }
+  }
+}

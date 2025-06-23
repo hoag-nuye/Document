@@ -1,0 +1,296 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Drag and Drop Board</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f3f4f6; /* Tailwind's gray-100 */
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .node {
+      position: absolute;
+      padding: 16px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border: 1px solid #ccc;
+      cursor: grab;
+      user-select: none;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .node:active {
+      cursor: grabbing;
+      box-shadow: 0 0 0 2px #60a5fa; /* Tailwind's ring-blue-400 */
+    }
+
+    .node-title {
+      font-weight: 600;
+      font-size: 18px;
+      color: #1f2937; /* Tailwind's gray-800 */
+    }
+  </style>
+</head>
+<body>
+
+  <div class="node" id="nodeA" style="left: 100px; top: 100px;">
+    <div class="node-title">Node A</div>
+  </div>
+
+  <div class="node" id="nodeB" style="left: 300px; top: 150px;">
+    <div class="node-title">Node B</div>
+  </div>
+
+  <script>
+    const nodes = document.querySelectorAll('.node');
+    let currentNode = null;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    nodes.forEach(node => {
+      node.addEventListener('mousedown', (e) => {
+        currentNode = node;
+        const rect = node.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        node.style.zIndex = 1000;
+      });
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (currentNode) {
+        const x = e.clientX - offsetX;
+        const y = e.clientY - offsetY;
+        currentNode.style.left = `${x}px`;
+        currentNode.style.top = `${y}px`;
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (currentNode) {
+        currentNode.style.zIndex = 0;
+        currentNode = null;
+      }
+    });
+  </script>
+
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Drag and Drop Flow Board</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f3f4f6;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    .node {
+      position: absolute;
+      padding: 16px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border: 1px solid #ccc;
+      cursor: grab;
+      user-select: none;
+      transition: box-shadow 0.2s ease;
+    }
+    .node:active {
+      cursor: grabbing;
+      box-shadow: 0 0 0 2px #60a5fa;
+    }
+    .node-title {
+      font-weight: 600;
+      font-size: 18px;
+      color: #1f2937;
+    }
+    .controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+    }
+    .carousel-container {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      overflow: hidden;
+    }
+    .carousel {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+       will-change: transform;
+    }
+    .card {
+      min-width: 150px;
+      height: 100px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      margin-right: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .carousel-buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .carousel-buttons button {
+      margin: 0 8px;
+      padding: 6px 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <button onclick="createNode()">Add Node</button>
+  </div>
+
+  <canvas id="connectionCanvas" width="100%" height="100%" style="position: absolute; top: 0; left: 0; z-index: 0;"></canvas>
+
+  <div class="node" id="nodeA" style="left: 100px; top: 100px;">
+    <div class="node-title">Node A</div>
+  </div>
+
+  <div class="node" id="nodeB" style="left: 300px; top: 150px;">
+    <div class="node-title">Node B</div>
+  </div>
+
+  <div class="carousel-container">
+    <div id="carousel" class="carousel"></div>
+    <div class="carousel-buttons">
+      <button onclick="scrollLeft()">⬅</button>
+      <button onclick="scrollRight()">➡</button>
+    </div>
+  </div>
+
+  <script>
+    let nodes = document.querySelectorAll('.node');
+    let currentNode = null;
+    let offsetX = 0;
+    let offsetY = 0;
+    let nodeCounter = 2;
+    const canvas = document.getElementById('connectionCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    function updateCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const a = document.getElementById('nodeA').getBoundingClientRect();
+      const b = document.getElementById('nodeB').getBoundingClientRect();
+      ctx.beginPath();
+      ctx.moveTo(a.left + a.width / 2, a.top + a.height / 2);
+      ctx.lineTo(b.left + b.width / 2, b.top + b.height / 2);
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    function addDragListeners(node) {
+      node.addEventListener('mousedown', (e) => {
+        currentNode = node;
+        const rect = node.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        node.style.zIndex = 1000;
+      });
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      if (currentNode) {
+        const x = e.clientX - offsetX;
+        const y = e.clientY - offsetY;
+        currentNode.style.left = `${x}px`;
+        currentNode.style.top = `${y}px`;
+        updateCanvas();
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (currentNode) {
+        currentNode.style.zIndex = 0;
+        currentNode = null;
+      }
+    });
+
+    function createNode() {
+      nodeCounter++;
+      const newNode = document.createElement('div');
+      newNode.className = 'node';
+      newNode.id = `node${nodeCounter}`;
+      newNode.style.left = `${100 + nodeCounter * 20}px`;
+      newNode.style.top = `${100 + nodeCounter * 20}px`;
+      newNode.innerHTML = `<div class="node-title">Node ${nodeCounter}</div>`;
+      document.body.appendChild(newNode);
+      addDragListeners(newNode);
+    }
+
+    addDragListeners(document.getElementById('nodeA'));
+    addDragListeners(document.getElementById('nodeB'));
+    updateCanvas();
+
+    const carousel = document.getElementById('carousel');
+    const cards = [1, 2, 3, 4, 5, 6];
+    const visibleCount = 4;
+    let scrollIndex = 0;
+
+    function renderCarousel() {
+        // Tạo toàn bộ card 1 lần
+        carousel.innerHTML = '';
+        cards.forEach((val) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = val;
+        carousel.appendChild(card);
+        });
+        updateCarouselPosition();
+    }
+
+    function updateCarouselPosition() {
+        const cardWidth = 150 + 16; // width + margin
+        const offset = scrollIndex * cardWidth;
+        carousel.style.transform = `translateX(-${offset}px)`;
+    }
+
+    function scrollLeft() {
+        if (scrollIndex > 0) scrollIndex--;
+        updateCarouselPosition();
+    }
+
+    function scrollRight() {
+        if (scrollIndex + visibleCount < cards.length) scrollIndex++;
+        else scrollIndex = 0; // Quay lại đầu như slideshow
+        updateCarouselPosition();
+    }
+
+    // Tự cuộn mỗi 2 giây
+    setInterval(scrollRight, 2000);
+
+    renderCarousel();
+  </script>
+</body>
+</html>

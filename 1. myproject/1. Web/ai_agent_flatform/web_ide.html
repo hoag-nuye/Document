@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Online Code Editor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <style>
+        #editor { height: 300px; width: 600px; }
+        #output { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Python Code Editor</h2>
+    <div id="editor">print("Hello, World!")</div>
+    <button onclick="runCode()">Run Code</button>
+    <pre id="output"></pre>
+
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/python");
+
+        async function runCode() {
+            const code = editor.getValue();
+            const response = await fetch('/run-python', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: code })
+            });
+            const result = await response.json();
+            document.getElementById('output').innerText = result.output || result.error;
+        }
+    </script>
+</body>
+</html>
